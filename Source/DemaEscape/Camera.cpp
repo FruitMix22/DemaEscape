@@ -45,6 +45,19 @@ void ACamera::Tick(float DeltaTime)
 	{
 		mainCharacterPos = MainCharacter->GetActorLocation();
 		UE_LOG(LogTemp, Display, TEXT("Player Location: X=%f Y=%f Z=%f"), mainCharacterPos.X, mainCharacterPos.Y, mainCharacterPos.Z);
+
+		// 1. Calculate the direction vector from the current location to the target location
+		FVector CurrentLocation = this->GetActorLocation();
+		FVector Direction = mainCharacterPos - CurrentLocation;
+
+		// 2. Normalize the direction vector to a unit vector
+		Direction.Normalize();
+
+		// 3. Create a rotation (FRotator) that makes the X-axis (forward) point along this direction
+		FRotator NewRotation = FRotationMatrix::MakeFromX(Direction).Rotator();
+
+		// 4. Set the actor's new rotation
+		this->SetActorRotation(NewRotation);
 	}
 
 }
