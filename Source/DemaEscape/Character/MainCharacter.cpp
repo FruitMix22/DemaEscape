@@ -2,6 +2,8 @@
 
 
 #include "MainCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -12,6 +14,21 @@ AMainCharacter::AMainCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	// Spring Arm
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm->SetupAttachment(GetCapsuleComponent());
+	SpringArm->TargetArmLength = 5.f;
+	SpringArm->bUsePawnControlRotation = true;
+
+	// Head bob pivot
+	HeadBobPivot = CreateDefaultSubobject<USceneComponent>(TEXT("HeadBobPivot"));
+	HeadBobPivot->SetupAttachment(SpringArm);
+
+	// Camera
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	FollowCamera->SetupAttachment(HeadBobPivot);
+	FollowCamera->bUsePawnControlRotation = false;
 }
 
 // Called when the game starts or when spawned
@@ -29,12 +46,43 @@ void AMainCharacter::BeginPlay()
 				Subsystem->AddMappingContext(DefaultMappingContext, 0);
 			}
 	}
+
+	if (HeadBobPivot)
+	{
+		CameraStartLocation = HeadBobPivot->GetRelativeLocation();
+	}
+
 }
 
 // Called every frame
 void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (!HeadBobPivot) return;
+
+	float Speed = GetVelocity().Size2D();
+
+	if (Speed > 5.f && GetCharacterMovement()->IsMovingOnGround())
+	{
+		HeadBobTime += DeltaTime * HeadBobFrequency;
+
+		float BobOffset = FMath::Sin(HeadBobTime) * HeadBobAmplitude;
+
+		FVector NewLocation = CameraStartLocation;
+		NewLocation.Z += BobOffset;
+
+		HeadBobPivot->SetRelativeLocation(NewLocation);
+	}
+	else
+	{
+		HeadBobTime = 0.f;
+
+		FVector Current = HeadBobPivot->GetRelativeLocation();
+		HeadBobPivot->SetRelativeLocation(
+			FMath::VInterpTo(Current, CameraStartLocation, DeltaTime, 10.f)
+		);
+	}
+
 
 }
 

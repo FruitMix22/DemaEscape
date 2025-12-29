@@ -41,6 +41,8 @@ void ACamera::FaceMainCharacter()
 	{
 		mainCharacterPos = MainCharacter->GetActorLocation();
 	}
+	//TODO: Add footsteps to player as well as head bobbing
+
 
 	//TODO: Make this smoother rather than snap to face, no idea how tho
 	FVector Direction = mainCharacterPos - cameraPos;

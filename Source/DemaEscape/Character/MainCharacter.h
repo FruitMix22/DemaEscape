@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Components/SceneComponent.h"
 #include "InputActionValue.h"
 #include "MainCharacter.generated.h"
 
@@ -42,6 +45,26 @@ public:
 	// Look Input Action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	class UInputAction* LookAction;
+
+	// Camera system
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	USpringArmComponent* SpringArm;
+
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	USceneComponent* HeadBobPivot;
+
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	UCameraComponent* FollowCamera;
+
+	float HeadBobTime = 0.f;
+
+	UPROPERTY(EditAnywhere, Category = "Head Bob")
+	float HeadBobFrequency = 8.f;
+
+	UPROPERTY(EditAnywhere, Category = "Head Bob")
+	float HeadBobAmplitude = 5.f;
+
+	FVector CameraStartLocation;
 
 	// Called for movement Input
 	void Move(const FInputActionValue& Value);
