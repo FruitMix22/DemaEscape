@@ -82,8 +82,6 @@ void AMainCharacter::Tick(float DeltaTime)
 			FMath::VInterpTo(Current, CameraStartLocation, DeltaTime, 10.f)
 		);
 	}
-
-
 }
 
 // Called to bind functionality to input
