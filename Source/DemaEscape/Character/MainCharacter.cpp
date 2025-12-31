@@ -4,6 +4,8 @@
 #include "MainCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/AudioComponent.h"
+#include "Sound/SoundCue.h"
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -29,6 +31,15 @@ AMainCharacter::AMainCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(HeadBobPivot);
 	FollowCamera->bUsePawnControlRotation = false;
+
+	// Assign footstep sound cue
+	static ConstructorHelpers::FObjectFinder<USoundCue> footstepCue(TEXT("/Game/Audio/Footsteps/SC_FootSteps"));
+	footstepAudioCue = footstepCue.Object;
+
+	// Create audio component for footstep sounds
+	footstepAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FootstepAudioComponent"));
+	footstepAudioComponent->SetupAttachment(GetCapsuleComponent());
+	footstepAudioComponent->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
@@ -52,6 +63,9 @@ void AMainCharacter::BeginPlay()
 		CameraStartLocation = HeadBobPivot->GetRelativeLocation();
 	}
 
+	if (footstepAudioComponent->IsValidLowLevelFast()) {
+		footstepAudioComponent->SetSound(footstepAudioCue);
+	}
 }
 
 // Called every frame
@@ -67,11 +81,19 @@ void AMainCharacter::Tick(float DeltaTime)
 		HeadBobTime += DeltaTime * HeadBobFrequency;
 
 		float BobOffset = FMath::Sin(HeadBobTime) * HeadBobAmplitude;
+		UE_LOG(LogTemp, Warning, TEXT("BobOffset: %f"), BobOffset);
+
+		
 
 		FVector NewLocation = CameraStartLocation;
 		NewLocation.Z += BobOffset;
 
 		HeadBobPivot->SetRelativeLocation(NewLocation);
+		if( BobOffset < 0.f && previousHeadBobOffset >= 0.f )
+		{
+			footstepAudioComponent->Play();
+		}
+		previousHeadBobOffset = BobOffset;
 	}
 	else
 	{
@@ -139,6 +161,8 @@ void AMainCharacter::Look(const FInputActionValue& Value)
 
 void AMainCharacter::Jumping()
 {
-	Jump();
+	// No jumping for now, might come back later
+	//Jump();
+	footstepAudioComponent->Play();
 }
 

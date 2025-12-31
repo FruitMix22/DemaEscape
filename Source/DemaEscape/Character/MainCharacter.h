@@ -64,7 +64,17 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Head Bob")
 	float HeadBobAmplitude = 5.f;
 
+	UPROPERTY(EditAnywhere, Category = "Head Bob")
+	float previousHeadBobOffset;
+
 	FVector CameraStartLocation;
+
+	// Footsteps
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+	USoundCue* footstepAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+	UAudioComponent* footstepAudioComponent;
 
 	// Called for movement Input
 	void Move(const FInputActionValue& Value);
