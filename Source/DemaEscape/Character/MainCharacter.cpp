@@ -58,14 +58,15 @@ void AMainCharacter::BeginPlay()
 			}
 	}
 
+	// Store initial camera location for head bobbing
 	if (HeadBobPivot)
 	{
 		CameraStartLocation = HeadBobPivot->GetRelativeLocation();
 	}
 
-	if (footstepAudioComponent->IsValidLowLevelFast()) {
-		footstepAudioComponent->SetSound(footstepAudioCue);
-	}
+	// Set footstep sound cue to audio component
+	if (footstepAudioComponent->IsValidLowLevelFast()) 
+	{ footstepAudioComponent->SetSound(footstepAudioCue); }
 }
 
 // Called every frame
@@ -81,14 +82,12 @@ void AMainCharacter::Tick(float DeltaTime)
 		HeadBobTime += DeltaTime * HeadBobFrequency;
 
 		float BobOffset = FMath::Sin(HeadBobTime) * HeadBobAmplitude;
-		UE_LOG(LogTemp, Warning, TEXT("BobOffset: %f"), BobOffset);
-
-		
 
 		FVector NewLocation = CameraStartLocation;
 		NewLocation.Z += BobOffset;
 
 		HeadBobPivot->SetRelativeLocation(NewLocation);
+
 		if( BobOffset < 0.f && previousHeadBobOffset >= 0.f )
 		{
 			footstepAudioComponent->Play();
@@ -100,9 +99,7 @@ void AMainCharacter::Tick(float DeltaTime)
 		HeadBobTime = 0.f;
 
 		FVector Current = HeadBobPivot->GetRelativeLocation();
-		HeadBobPivot->SetRelativeLocation(
-			FMath::VInterpTo(Current, CameraStartLocation, DeltaTime, 10.f)
-		);
+		HeadBobPivot->SetRelativeLocation(FMath::VInterpTo(Current, CameraStartLocation, DeltaTime, 10.f));
 	}
 }
 
@@ -163,6 +160,5 @@ void AMainCharacter::Jumping()
 {
 	// No jumping for now, might come back later
 	//Jump();
-	footstepAudioComponent->Play();
 }
 
