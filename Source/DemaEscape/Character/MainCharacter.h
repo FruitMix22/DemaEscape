@@ -46,6 +46,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
 	class UInputAction* LookAction;
 
+	// Sprint Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	class UInputAction* SprintAction;
+
 	// Camera system
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	USpringArmComponent* SpringArm;
@@ -64,10 +68,20 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Head Bob")
 	float HeadBobAmplitude = 5.f;
 
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float maxWalkSpeed = 150;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float maxSprintSpeed = 400;
+
+
 	FVector CameraStartLocation;
 
 	// Called for movement Input
 	void Move(const FInputActionValue& Value);
+
+	// Sprinting
+	void Sprint(const FInputActionValue& Value);
 
 	// Called for looking Input
 	void Look(const FInputActionValue& Value);
