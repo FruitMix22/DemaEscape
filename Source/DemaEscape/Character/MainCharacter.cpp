@@ -42,9 +42,9 @@ void AMainCharacter::BeginPlay()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = 
 				ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>
 				(PlayerController->GetLocalPlayer()))
-			{
+				{
 				Subsystem->AddMappingContext(DefaultMappingContext, 0);
-			}
+				}
 	}
 
 	if (HeadBobPivot)
@@ -52,16 +52,17 @@ void AMainCharacter::BeginPlay()
 		CameraStartLocation = HeadBobPivot->GetRelativeLocation();
 	}
 
+	this->GetCharacterMovement()->MaxWalkSpeed = 150.f;
+
 }
 
 // Called every frame
 void AMainCharacter::Tick(float DeltaTime)
 {
-	this->GetCharacterMovement()->MaxWalkSpeed = 150.f;
-
 	Super::Tick(DeltaTime);
 
 	if (!HeadBobPivot) return;
+	//Anything under this wont be ran if there isnt a headbob pivot
 
 	float Speed = GetVelocity().Size2D();
 
@@ -104,7 +105,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainCharacter::Move);
 
 		//Sprint
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainCharacter::Sprint);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainCharacter::Sprinting);
 		
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainCharacter::Look);
@@ -133,12 +134,10 @@ void AMainCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-void AMainCharacter::Sprint(const FInputActionValue& Value)
+void AMainCharacter::Sprinting(const FInputActionValue& Value)
 {
-	// Get the value of the Input Action for whatever type you want here...
-	bool BoolValue = Value.Get<bool>();
-	UE_LOG(LogTemp, Warning, TEXT("Sprintttt"));
-	this->GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	this->GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	UE_LOG(LogTemp, Warning, TEXT("Sprinting"));
 }
 
 void AMainCharacter::Look(const FInputActionValue& Value)
@@ -156,6 +155,7 @@ void AMainCharacter::Look(const FInputActionValue& Value)
 void AMainCharacter::Jumping()
 {
 	Jump();
+	UE_LOG(LogTemp, Warning, TEXT("Jump"));
 }
 
  

@@ -81,7 +81,7 @@ public:
 	void Move(const FInputActionValue& Value);
 
 	// Sprinting
-	void Sprint(const FInputActionValue& Value);
+	void Sprinting(const FInputActionValue& Value);
 
 	// Called for looking Input
 	void Look(const FInputActionValue& Value);
