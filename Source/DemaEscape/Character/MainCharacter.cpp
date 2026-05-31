@@ -54,6 +54,9 @@ void AMainCharacter::BeginPlay()
 
 	this->GetCharacterMovement()->MaxWalkSpeed = maxWalkSpeed;
 
+	HeadBobFrequency = HeadBobFrequencyWalk;
+	HeadBobAmplitude = HeadBobAmplitudeWalk;
+
 }
 
 // Called every frame
@@ -142,11 +145,15 @@ void AMainCharacter::Sprinting(const FInputActionValue& Value)
 	if (bIsSprinting)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = maxSprintSpeed;
+		HeadBobAmplitude = HeadBobAmplitudeSprint;
+		HeadBobFrequency = HeadBobFrequencySprint;
 		UE_LOG(LogTemp, Warning, TEXT("Sprinting"));
 	}
 	else
 	{
 		GetCharacterMovement()->MaxWalkSpeed = maxWalkSpeed;
+		HeadBobAmplitude = HeadBobAmplitudeWalk;
+		HeadBobFrequency = HeadBobFrequencyWalk;
 		UE_LOG(LogTemp, Warning, TEXT("Not sprinting"));
 	}
 }

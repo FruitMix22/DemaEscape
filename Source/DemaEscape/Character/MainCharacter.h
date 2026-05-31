@@ -62,11 +62,23 @@ public:
 
 	float HeadBobTime = 0.f;
 
-	UPROPERTY(EditAnywhere, Category = "Head Bob")
-	float HeadBobFrequency = 8.f;
+	UPROPERTY(VisibleAnywhere, Category = "Head Bob")
+	float HeadBobFrequency = 0.f;
 
 	UPROPERTY(EditAnywhere, Category = "Head Bob")
-	float HeadBobAmplitude = 5.f;
+	float HeadBobFrequencyWalk = 6.f;
+
+	UPROPERTY(EditAnywhere, Category = "Head Bob")
+	float HeadBobFrequencySprint = 12.f;
+
+	UPROPERTY(VisibleAnywhere, Category = "Head Bob")
+	float HeadBobAmplitude = 0.f;
+
+	UPROPERTY(EditAnywhere, Category = "Head Bob")
+	float HeadBobAmplitudeWalk = 3.f;
+
+	UPROPERTY(EditAnywhere, Category = "Head Bob")
+	float HeadBobAmplitudeSprint = 7.f;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float maxWalkSpeed = 150;
