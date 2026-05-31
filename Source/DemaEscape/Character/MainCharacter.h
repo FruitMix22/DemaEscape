@@ -75,6 +75,8 @@ public:
 	float maxSprintSpeed = 400;
 
 
+
+
 	FVector CameraStartLocation;
 
 	// Called for movement Input

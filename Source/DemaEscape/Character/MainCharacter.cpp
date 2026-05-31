@@ -52,7 +52,7 @@ void AMainCharacter::BeginPlay()
 		CameraStartLocation = HeadBobPivot->GetRelativeLocation();
 	}
 
-	this->GetCharacterMovement()->MaxWalkSpeed = 150.f;
+	this->GetCharacterMovement()->MaxWalkSpeed = maxWalkSpeed;
 
 }
 
@@ -105,7 +105,8 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainCharacter::Move);
 
 		//Sprint
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Triggered, this, &AMainCharacter::Sprinting);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AMainCharacter::Sprinting);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AMainCharacter::Sprinting);
 		
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainCharacter::Look);
@@ -136,8 +137,18 @@ void AMainCharacter::Move(const FInputActionValue& Value)
 
 void AMainCharacter::Sprinting(const FInputActionValue& Value)
 {
-	this->GetCharacterMovement()->MaxWalkSpeed = 500.f;
-	UE_LOG(LogTemp, Warning, TEXT("Sprinting"));
+	const bool bIsSprinting = Value.Get<bool>();
+
+	if (bIsSprinting)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = maxSprintSpeed;
+		UE_LOG(LogTemp, Warning, TEXT("Sprinting"));
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = maxWalkSpeed;
+		UE_LOG(LogTemp, Warning, TEXT("Not sprinting"));
+	}
 }
 
 void AMainCharacter::Look(const FInputActionValue& Value)
