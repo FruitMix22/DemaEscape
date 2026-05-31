@@ -25,7 +25,7 @@ AMainCharacter::AMainCharacter()
 	HeadBobPivot = CreateDefaultSubobject<USceneComponent>(TEXT("HeadBobPivot"));
 	HeadBobPivot->SetupAttachment(SpringArm);
 
-	// Camera
+	// FollowFollowCamera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(HeadBobPivot);
 	FollowCamera->bUsePawnControlRotation = false;
@@ -174,6 +174,40 @@ void AMainCharacter::Jumping()
 {
 	Jump();
 	UE_LOG(LogTemp, Warning, TEXT("Jump"));
+}
+
+void AMainCharacter::Ray()
+{
+	FVector start = GetActorLocation();
+	FVector forward = FollowCamera->GetForwardVector();
+	start = FVector(start.X + (forward.X * 100), start.Y + (forward.Y * 100), start.Z + (forward.Z * 100));
+	FVector end = start + (forward * 1000);
+	FHitResult hit;
+
+	if (GetWorld())
+	{
+		bool actorHit = GetWorld()->LineTraceSingleByChannel(hit, start, end, ECC_Visibility);
+		DrawDebugLine(
+			GetWorld(),
+			start,
+			end,
+			FColor::Red,
+			false,
+			2.0f,
+			0,
+			2.0f
+		);
+
+		if (actorHit)
+		{
+			GEngine->AddOnScreenDebugMessage(
+				-1,
+				2.0f,
+				FColor::Yellow,
+				TEXT("Hit Something!")
+			);
+		}
+	}
 }
 
  

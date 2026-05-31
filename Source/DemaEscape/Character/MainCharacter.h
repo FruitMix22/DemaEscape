@@ -102,4 +102,7 @@ public:
 
 	//Called for Jumping Input
 	void Jumping();
+
+	// Ray tick
+	void Ray();
 };
