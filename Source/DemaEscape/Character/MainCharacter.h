@@ -86,6 +86,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float maxSprintSpeed = 400;
 
+	UPROPERTY(EditAnywhere, Category = "Interact")
+	float interactDistance = 1;
+
 
 
 

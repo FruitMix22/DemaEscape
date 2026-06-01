@@ -64,6 +64,8 @@ void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	Ray();
+
 	if (!HeadBobPivot) return;
 	//Anything under this wont be ran if there isnt a headbob pivot
 
@@ -178,36 +180,29 @@ void AMainCharacter::Jumping()
 
 void AMainCharacter::Ray()
 {
-	FVector start = GetActorLocation();
-	FVector forward = FollowCamera->GetForwardVector();
-	start = FVector(start.X + (forward.X * 100), start.Y + (forward.Y * 100), start.Z + (forward.Z * 100));
-	FVector end = start + (forward * 1000);
-	FHitResult hit;
+	FVector Start = FollowCamera->GetComponentLocation();
+	FVector Forward = FollowCamera->GetForwardVector();
+	FVector End = Start + (Forward * (interactDistance * 100));
 
-	if (GetWorld())
+	FHitResult Hit;
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel(
+		Hit,
+		Start,
+		End,
+		ECC_Visibility
+	);
+
+	if (bHit)
 	{
-		bool actorHit = GetWorld()->LineTraceSingleByChannel(hit, start, end, ECC_Visibility);
-		DrawDebugLine(
-			GetWorld(),
-			start,
-			end,
-			FColor::Red,
-			false,
-			2.0f,
-			0,
-			2.0f
-		);
+		AActor* HitActor = Hit.GetActor();
 
-		if (actorHit)
+		if (HitActor && HitActor->ActorHasTag("Interactable"))
 		{
-			GEngine->AddOnScreenDebugMessage(
-				-1,
-				2.0f,
-				FColor::Yellow,
-				TEXT("Hit Something!")
-			);
+			UE_LOG(LogTemp, Warning, TEXT("Hit an interactable object!"));
 		}
 	}
+	
 }
 
  
