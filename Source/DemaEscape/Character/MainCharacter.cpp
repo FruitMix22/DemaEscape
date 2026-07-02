@@ -64,8 +64,6 @@ void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	Ray();
-
 	if (!HeadBobPivot) return;
 	//Anything under this wont be ran if there isnt a headbob pivot
 
@@ -115,6 +113,9 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainCharacter::Look);
+
+		//Interact
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AMainCharacter::Ray);
 	}
 
 }
@@ -194,7 +195,7 @@ void AMainCharacter::Ray()
 	);
 
 	if (bHit)
-	{
+	{ 
 		AActor* HitActor = Hit.GetActor();
 
 		if (HitActor && HitActor->ActorHasTag("Interactable"))
@@ -202,7 +203,6 @@ void AMainCharacter::Ray()
 			UE_LOG(LogTemp, Warning, TEXT("Hit an interactable object!"));
 		}
 	}
-	
 }
 
  
